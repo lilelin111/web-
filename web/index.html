@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171a17">
+  <title>蜀行 | 四川影像地图</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body class="is-intro-locked">
+  <header class="topbar">
+    <a class="brand" href="#intro" aria-label="回到开头">
+      <span class="brand-mark">蜀</span>
+      <span class="brand-text">蜀行</span>
+    </a>
+    <nav class="topnav" aria-label="页面导航">
+      <a href="#map">地图</a>
+      <a href="#train">轨道</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="intro" class="intro" aria-label="开场视频">
+      <div id="video-stage" class="video-stage">
+        <video id="intro-video" class="intro-video" muted playsinline preload="auto" poster="/assets/images/train-1.jpg">
+          <source src="/assets/video/intro.mp4" type="video/mp4">
+        </video>
+        <div id="video-fallback" class="video-fallback" hidden>
+          <span class="fallback-orbit orbit-one" aria-hidden="true"></span>
+          <span class="fallback-orbit orbit-two" aria-hidden="true"></span>
+          <p class="fallback-kicker">四川</p>
+          <h1>山河入镜，蜀地开场</h1>
+          <button id="fallback-play" class="ghost-button" type="button">播放</button>
+        </div>
+        <div class="video-shadow" aria-hidden="true"></div>
+      </div>
+
+      <div id="video-companions" class="video-companions" aria-label="开场图片">
+        <figure class="companion-card">
+          <img src="/assets/images/train-1.jpg" alt="">
+        </figure>
+        <figure class="companion-card">
+          <img src="/assets/images/train-2.jpg" alt="">
+        </figure>
+        <figure class="companion-card">
+          <img src="/assets/images/train-3.jpg" alt="">
+        </figure>
+      </div>
+    </section>
+
+    <section id="map" class="map-section">
+      <div class="section-heading">
+        <p class="eyebrow">四川地图</p>
+        <h2>点选一座城</h2>
+      </div>
+
+      <div class="map-layout">
+        <div id="sichuan-map" class="map-shell" aria-label="四川地图">
+          <svg class="map-shape" viewBox="0 0 1000 760" role="img" aria-label="四川轮廓示意图">
+            <path class="map-land" d="M336 82C420 35 520 72 610 68C700 64 760 112 806 178C850 242 826 316 842 386C858 456 826 526 780 580C724 646 636 672 560 704C470 742 386 708 318 682C248 656 190 602 168 528C146 454 92 396 108 314C124 232 176 168 236 126C268 105 302 96 336 82Z"></path>
+            <path class="map-river" d="M154 408C254 374 330 402 424 378C518 354 586 302 668 322C750 342 792 420 844 448"></path>
+            <path class="map-ridge" d="M218 206C316 240 374 226 454 264C534 302 592 292 682 332C744 358 792 420 824 486"></path>
+          </svg>
+          <div id="map-points" class="map-points"></div>
+        </div>
+
+        <aside class="map-aside">
+          <p class="map-aside-kicker">蜀地</p>
+          <p class="map-aside-copy">从盆地到高原，城市沿着江河与山脉展开。点选地名，进入它的故事。</p>
+          <div class="map-legend" aria-label="地图图例">
+            <span><i class="legend-dot legend-dot-city"></i>城市</span>
+            <span><i class="legend-line"></i>江河与山脉</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="train" class="train-section">
+      <div class="section-heading section-heading-light">
+        <p class="eyebrow">轨道旅程</p>
+        <h2>火车经过的地方，图景依次浮现</h2>
+      </div>
+
+      <div id="train-stage" class="train-stage" aria-label="小火车轨道">
+        <div id="train-track" class="train-track">
+          <div class="track-line" aria-hidden="true"></div>
+          <div id="train-images" class="train-images"></div>
+          <div id="train" class="train" aria-hidden="true">
+            <svg viewBox="0 0 190 90" role="img" aria-label="小火车">
+              <rect x="14" y="24" width="116" height="42" rx="10" fill="#c4452d"></rect>
+              <rect x="132" y="34" width="38" height="32" rx="8" fill="#d8a24a"></rect>
+              <rect x="30" y="12" width="34" height="28" rx="6" fill="#f6efe2"></rect>
+              <rect x="74" y="12" width="34" height="28" rx="6" fill="#f6efe2"></rect>
+              <rect x="24" y="34" width="96" height="16" rx="4" fill="#8e2f22"></rect>
+              <circle cx="48" cy="70" r="10" fill="#111"></circle>
+              <circle cx="112" cy="70" r="10" fill="#111"></circle>
+              <circle cx="154" cy="70" r="8" fill="#111"></circle>
+              <text x="72" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#f6efe2">蜀</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>蜀行</span>
+    <span>四川影像地图</span>
+  </footer>
+
+  <script src="/assets/js/app.js"></script>
+</body>
+</html>
