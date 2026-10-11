@@ -35,10 +35,6 @@ body {
   overflow-x: hidden;
 }
 
-body.is-intro-locked {
-  overflow: hidden;
-}
-
 img,
 svg,
 video {
@@ -117,8 +113,15 @@ button {
   background: rgba(196, 69, 45, 0.7);
 }
 
+.intro {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #050505;
+}
+
 .video-stage {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 110;
   overflow: hidden;
@@ -141,6 +144,10 @@ button {
   border: 1px solid rgba(255, 250, 240, 0.36);
   border-radius: 8px;
   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.36);
+}
+
+.video-stage.is-in-page {
+  position: absolute;
 }
 
 .intro-video {
@@ -228,7 +235,7 @@ button {
 }
 
 .video-companions {
-  position: fixed;
+  position: absolute;
   top: var(--shrink-top);
   left: var(--companion-left);
   z-index: 109;
@@ -304,7 +311,7 @@ button {
   position: relative;
   width: 100%;
   max-width: 860px;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1000 / 760;
   margin: 0 auto;
   border-radius: 8px;
   background: rgba(255, 250, 240, 0.48);
@@ -322,6 +329,23 @@ button {
   stroke: var(--jade);
   stroke-width: 5;
   filter: drop-shadow(0 18px 26px rgba(46, 107, 88, 0.18));
+}
+
+.map-city {
+  fill: #eadcc2;
+  stroke: rgba(46, 107, 88, 0.58);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+  transition: fill 180ms ease, stroke 180ms ease;
+}
+
+.map-city:hover {
+  fill: #e3cba8;
+  stroke: var(--cinnabar);
+}
+
+.map-fallback {
+  display: block;
 }
 
 .map-river,
@@ -352,8 +376,8 @@ button {
   top: calc(var(--y) * 1%);
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 5px 8px 5px 5px;
+  gap: 5px;
+  padding: 3px 6px 3px 3px;
   border: 0;
   border-radius: 999px;
   color: var(--ink);
@@ -373,8 +397,8 @@ button {
 }
 
 .map-dot {
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--cinnabar);
   box-shadow: 0 0 0 4px rgba(196, 69, 45, 0.16);
@@ -387,7 +411,7 @@ button {
 }
 
 .map-label {
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 800;
   white-space: nowrap;
 }
@@ -585,6 +609,107 @@ button {
   animation-play-state: running;
 }
 
+.train-journey-section {
+  height: 100vh;
+  min-height: 100vh;
+  padding: 0;
+  background: #0b0e13;
+}
+
+.train-journey-sticky {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #0b0e13;
+}
+
+#train-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.train-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #c9a35a, #e9d9b0, #7a2e2e);
+}
+
+.train-hud {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  z-index: 3;
+  padding: 8px 26px;
+  border: 1px solid rgba(233, 217, 176, 0.28);
+  border-radius: 30px;
+  color: #e9d9b0;
+  background: rgba(20, 16, 10, 0.35);
+  backdrop-filter: blur(6px);
+  font-size: 15px;
+  letter-spacing: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 0.6s ease;
+}
+
+.train-hud.show {
+  opacity: 1;
+}
+
+.train-hint {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  z-index: 3;
+  color: rgba(233, 217, 176, 0.7);
+  font-size: 13px;
+  letter-spacing: 4px;
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: breathe 2.6s ease-in-out infinite;
+}
+
+.train-navbtn {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(233, 217, 176, 0.35);
+  border-radius: 50%;
+  color: #f3e6c0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  font-size: 22px;
+  transform: translateY(-50%);
+  transition: background 0.3s ease;
+}
+
+.train-navbtn:hover {
+  background: rgba(60, 40, 15, 0.6);
+}
+
+#train-prev {
+  left: 14px;
+}
+
+#train-next {
+  right: 14px;
+}
+
 .site-footer {
   display: flex;
   justify-content: space-between;
@@ -613,6 +738,16 @@ button {
   }
   100% {
     transform: translate(-50%, -50%) translate(calc(var(--text-end-x, -120px) - var(--float-distance, 10px)), calc(var(--float-distance, 10px) * -1));
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.85;
   }
 }
 
@@ -683,6 +818,10 @@ button {
 
   .train-section {
     padding-top: 92px;
+  }
+
+  .train-journey-section {
+    padding-top: 0;
   }
 
   .train-stage {

@@ -7,7 +7,7 @@
   <title>蜀行 | 四川影像地图</title>
   <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
-<body class="is-intro-locked">
+<body>
   <header class="topbar">
     <a class="brand" href="#intro" aria-label="回到开头">
       <span class="brand-mark">蜀</span>
@@ -56,8 +56,8 @@
 
       <div class="map-layout">
         <div id="sichuan-map" class="map-shell" aria-label="四川地图">
-          <svg class="map-shape" viewBox="0 0 1000 760" role="img" aria-label="四川轮廓示意图">
-            <path class="map-land" d="M336 82C420 35 520 72 610 68C700 64 760 112 806 178C850 242 826 316 842 386C858 456 826 526 780 580C724 646 636 672 560 704C470 742 386 708 318 682C248 656 190 602 168 528C146 454 92 396 108 314C124 232 176 168 236 126C268 105 302 96 336 82Z"></path>
+          <svg id="sichuan-map-svg" class="map-shape" viewBox="0 0 1000 760" role="img" aria-label="四川省真实行政轮廓">
+            <path class="map-land map-fallback" d="M336 82C420 35 520 72 610 68C700 64 760 112 806 178C850 242 826 316 842 386C858 456 826 526 780 580C724 646 636 672 560 704C470 742 386 708 318 682C248 656 190 602 168 528C146 454 92 396 108 314C124 232 176 168 236 126C268 105 302 96 336 82Z"></path>
             <path class="map-river" d="M154 408C254 374 330 402 424 378C518 354 586 302 668 322C750 342 792 420 844 448"></path>
             <path class="map-ridge" d="M218 206C316 240 374 226 454 264C534 302 592 292 682 332C744 358 792 420 824 486"></path>
           </svg>
@@ -75,31 +75,15 @@
       </div>
     </section>
 
-    <section id="train" class="train-section">
-      <div class="section-heading section-heading-light">
-        <p class="eyebrow">轨道旅程</p>
-        <h2>火车经过的地方，图景依次浮现</h2>
-      </div>
-
-      <div id="train-stage" class="train-stage" aria-label="小火车轨道">
-        <div id="train-track" class="train-track">
-          <div class="track-line" aria-hidden="true"></div>
-          <div id="train-images" class="train-images"></div>
-          <div id="train" class="train" aria-hidden="true">
-            <svg viewBox="0 0 190 90" role="img" aria-label="小火车">
-              <rect x="14" y="24" width="116" height="42" rx="10" fill="#c4452d"></rect>
-              <rect x="132" y="34" width="38" height="32" rx="8" fill="#d8a24a"></rect>
-              <rect x="30" y="12" width="34" height="28" rx="6" fill="#f6efe2"></rect>
-              <rect x="74" y="12" width="34" height="28" rx="6" fill="#f6efe2"></rect>
-              <rect x="24" y="34" width="96" height="16" rx="4" fill="#8e2f22"></rect>
-              <circle cx="48" cy="70" r="10" fill="#111"></circle>
-              <circle cx="112" cy="70" r="10" fill="#111"></circle>
-              <circle cx="154" cy="70" r="8" fill="#111"></circle>
-              <text x="72" y="48" text-anchor="middle" font-size="18" font-weight="700" fill="#f6efe2">蜀</text>
-            </svg>
-          </div>
+    <section id="train" class="train-section train-journey-section">
+      <div class="train-journey-sticky">
+        <canvas id="train-canvas" aria-label="川峡四路小火车旅程"></canvas>
+        <div id="train-progress" class="train-progress"></div>
+        <div id="train-hud" class="train-hud"></div>
+        <div id="train-hint" class="train-hint">✦ 向下滚动，随小火车缓缓启程 ✦</div>
+        <button id="train-prev" class="train-navbtn" type="button" aria-label="上一张图片">‹</button>
+        <button id="train-next" class="train-navbtn" type="button" aria-label="下一张图片">›</button>
         </div>
-      </div>
     </section>
   </main>
 
@@ -108,6 +92,8 @@
     <span>四川影像地图</span>
   </footer>
 
+  <script src="/assets/data/sichuan-map.js"></script>
+  <script src="/assets/js/train-journey.js"></script>
   <script src="/assets/js/app.js"></script>
 </body>
 </html>

@@ -15,7 +15,20 @@ const fallbackPageData = {
     { PointName: "南充", PointEnglishName: "Nanchong", URL: "https://baike.baidu.com/item/%E5%8D%97%E5%85%85" },
     { PointName: "阿坝", PointEnglishName: "Aba", URL: "https://baike.baidu.com/item/%E9%98%BF%E5%9D%9D%E5%B7%9E" },
     { PointName: "甘孜", PointEnglishName: "Ganzi", URL: "https://baike.baidu.com/item/%E7%94%98%E5%AD%9C%E5%B7%9E" },
-    { PointName: "凉山", PointEnglishName: "Liangshan", URL: "https://baike.baidu.com/item/%E5%87%89%E5%B1%B1%E5%B7%9E" }
+    { PointName: "凉山", PointEnglishName: "Liangshan", URL: "https://baike.baidu.com/item/%E5%87%89%E5%B1%B1%E5%B7%9E" },
+    { PointName: "德阳", PointEnglishName: "Deyang", URL: "https://baike.baidu.com/item/%E5%BE%B7%E9%98%B3" },
+    { PointName: "广元", PointEnglishName: "Guangyuan", URL: "https://baike.baidu.com/item/%E5%B9%BF%E5%85%83" },
+    { PointName: "遂宁", PointEnglishName: "Suining", URL: "https://baike.baidu.com/item/%E9%81%82%E5%AE%81" },
+    { PointName: "内江", PointEnglishName: "Neijiang", URL: "https://baike.baidu.com/item/%E5%86%85%E6%B1%9F" },
+    { PointName: "自贡", PointEnglishName: "Zigong", URL: "https://baike.baidu.com/item/%E8%87%AA%E8%B4%A1" },
+    { PointName: "泸州", PointEnglishName: "Luzhou", URL: "https://baike.baidu.com/item/%E6%B3%B8%E5%B7%9E" },
+    { PointName: "眉山", PointEnglishName: "Meishan", URL: "https://baike.baidu.com/item/%E7%9C%89%E5%B1%B1" },
+    { PointName: "雅安", PointEnglishName: "Yaan", URL: "https://baike.baidu.com/item/%E9%9B%85%E5%AE%89" },
+    { PointName: "巴中", PointEnglishName: "Bazhong", URL: "https://baike.baidu.com/item/%E5%B7%B4%E4%B8%AD" },
+    { PointName: "达州", PointEnglishName: "Dazhou", URL: "https://baike.baidu.com/item/%E8%BE%BE%E5%B7%9E" },
+    { PointName: "广安", PointEnglishName: "Guangan", URL: "https://baike.baidu.com/item/%E5%B9%BF%E5%AE%89" },
+    { PointName: "资阳", PointEnglishName: "Ziyang", URL: "https://baike.baidu.com/item/%E8%B5%84%E9%98%B3" },
+    { PointName: "攀枝花", PointEnglishName: "Panzhihua", URL: "https://baike.baidu.com/item/%E6%94%80%E6%9E%9D%E8%8A%B1" }
   ],
   train: {
     images: [
@@ -38,12 +51,26 @@ const cityLayout = {
   Nanchong: { x: 68, y: 48 },
   Aba: { x: 28, y: 27 },
   Ganzi: { x: 14, y: 44 },
-  Liangshan: { x: 29, y: 79 }
+  Liangshan: { x: 29, y: 79 },
+  Deyang: { x: 55, y: 43 },
+  Guangyuan: { x: 62, y: 21 },
+  Suining: { x: 61, y: 55 },
+  Neijiang: { x: 56, y: 67 },
+  Zigong: { x: 52, y: 72 },
+  Luzhou: { x: 55, y: 82 },
+  Meishan: { x: 40, y: 60 },
+  Yaan: { x: 30, y: 58 },
+  Bazhong: { x: 69, y: 28 },
+  Dazhou: { x: 78, y: 34 },
+  Guangan: { x: 76, y: 47 },
+  Ziyang: { x: 49, y: 50 },
+  Panzhihua: { x: 20, y: 84 }
 };
 
 const state = {
   introDone: false,
   fallbackTimer: 0,
+  videoDuration: 900,
   trainConfig: fallbackPageData.train,
   trainItems: [],
   trainX: -120,
@@ -62,6 +89,7 @@ const video = document.querySelector("#intro-video");
 const videoFallback = document.querySelector("#video-fallback");
 const fallbackPlay = document.querySelector("#fallback-play");
 const mapPoints = document.querySelector("#map-points");
+const mapSvg = document.querySelector("#sichuan-map-svg");
 const trainStage = document.querySelector("#train-stage");
 const trainTrack = document.querySelector("#train-track");
 const trainElement = document.querySelector("#train");
@@ -69,6 +97,15 @@ const trainImages = document.querySelector("#train-images");
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function shuffle(items) {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+  }
+  return copy;
 }
 
 function setCssNumber(name, value) {
@@ -117,6 +154,7 @@ function applyVideoConfig(config) {
   const width = config.shrinkWidth ?? 260;
   const height = config.shrinkHeight ?? 146;
   const duration = config.durationMs ?? 900;
+  state.videoDuration = duration;
 
   setCssNumber("--shrink-top", top);
   setCssNumber("--shrink-left", left);
@@ -142,7 +180,10 @@ function finishIntro() {
   video.pause();
   videoStage.classList.add("is-shrunk");
   introSection.classList.add("is-shrunk");
-  document.body.classList.remove("is-intro-locked");
+  window.setTimeout(() => {
+    videoStage.classList.add("is-in-page");
+    document.body.classList.remove("is-intro-locked");
+  }, state.videoDuration + 60);
 }
 
 function showVideoFallback() {
@@ -172,7 +213,7 @@ function normalizeMapPoints(points) {
   return points.map((point, index) => {
     const englishName = point.PointEnglishName || point.englishName || point.name || `Point ${index + 1}`;
     const name = point.PointName || point.name || englishName;
-    const layout = cityLayout[englishName] || {
+    const layout = (window.SICHUAN_MAP_DATA && window.SICHUAN_MAP_DATA.points && window.SICHUAN_MAP_DATA.points[name]) || cityLayout[englishName] || {
       x: 22 + (index % 4) * 18,
       y: 26 + Math.floor(index / 4) * 22
     };
@@ -182,9 +223,49 @@ function normalizeMapPoints(points) {
   });
 }
 
+function buildAllCityPoints(providedPoints) {
+  const cityMap = new Map();
+  providedPoints.forEach((point) => cityMap.set(point.name, point));
+  const mapData = window.SICHUAN_MAP_DATA;
+
+  if (mapData && mapData.points) {
+    Object.entries(mapData.points).forEach(([name, layout]) => {
+      if (!cityMap.has(name)) {
+        cityMap.set(name, {
+          name,
+          url: `https://www.baidu.com/s?wd=${encodeURIComponent(`四川 ${name}`)}`,
+          x: layout.x,
+          y: layout.y
+        });
+      }
+    });
+  }
+
+  return [...cityMap.values()];
+}
+
+function renderSichuanMap() {
+  const svg = window.SICHUAN_MAP_DATA;
+  if (!mapSvg || !svg || !Array.isArray(svg.paths) || !svg.paths.length) {
+    return;
+  }
+
+  mapSvg.replaceChildren();
+  svg.paths.forEach((item) => {
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", item.d);
+    path.setAttribute("class", "map-city");
+    path.setAttribute("fill-rule", "evenodd");
+    path.setAttribute("data-city", item.name);
+    mapSvg.append(path);
+  });
+}
+
 function renderMap(points) {
   mapPoints.replaceChildren();
-  normalizeMapPoints(points).forEach((point) => {
+  const normalized = normalizeMapPoints(points);
+  const allPoints = buildAllCityPoints(normalized);
+  allPoints.forEach((point) => {
     const button = document.createElement("button");
     const dot = document.createElement("span");
     const label = document.createElement("span");
@@ -234,6 +315,11 @@ function createTrainImage(config, index) {
 }
 
 function renderTrainImages(config) {
+  if (!trainImages) {
+    state.trainItems = [];
+    return;
+  }
+
   trainImages.replaceChildren();
   state.trainItems = [];
 
@@ -347,7 +433,7 @@ function updateMouseFollow() {
 }
 
 function startTrainLoop() {
-  if (state.trainFrame) {
+  if (state.trainFrame || !trainTrack || !trainElement) {
     return;
   }
 
@@ -368,6 +454,10 @@ function startTrainLoop() {
 }
 
 function bindTrainEvents() {
+  if (!trainStage || !trainElement) {
+    return;
+  }
+
   trainStage.addEventListener("pointermove", (event) => {
     const rect = trainStage.getBoundingClientRect();
     const factor = Number(state.trainConfig.followFactor) || 0.18;
@@ -397,6 +487,7 @@ function bindTrainEvents() {
 async function init() {
   const data = await loadPageData();
   applyVideoConfig(data.video);
+  renderSichuanMap();
   renderMap(data.map);
   state.trainConfig = data.train || fallbackPageData.train;
   renderTrainImages(state.trainConfig);
