@@ -44,16 +44,6 @@ const hint = document.getElementById("train-hint");
 const btnPrev = document.getElementById("train-prev");
 const btnNext = document.getElementById("train-next");
 const section = document.getElementById("train");
-let journeyT = 0;
-section.addEventListener("wheel", (event) => {
-  const atStart = journeyT <= 0;
-  const atEnd = journeyT >= 1;
-  if ((event.deltaY < 0 && atStart) || (event.deltaY > 0 && atEnd)) {
-    return;
-  }
-  event.preventDefault();
-  journeyT = clamp(journeyT + event.deltaY * 0.00045, 0, 1);
-}, { passive: false });
 
 let W=0,H=0,D=1;
 function resize(){
@@ -69,10 +59,38 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const lerp=(a,b,k)=>a+(b-a)*k;
 const easeInOut=k=>k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
 const easeOut=k=>1-Math.pow(1-k,3);
-/* 当前滚动进度 */
+
+/* 当前滚动进度：由小火车段落经过视口的距离驱动 */
 function scrollT(){
-  return journeyT;
+  const rect = section.getBoundingClientRect();
+  const scrollable = Math.max(1, section.offsetHeight - window.innerHeight);
+  return clamp(-rect.top / scrollable, 0, 1);
 }
+
+/* 用固定时间步长追赶滚动目标，避免鼠标滚轮或触控板的跳变造成卡帧。 */
+const PROGRESS_PER_SECOND = 0.32;
+const MAX_FRAME_DELTA = 0.05;
+let smoothT = 0;
+let phase = 0;
+let lastFrame = 0;
+
+function updateFrameState(now){
+  const delta = lastFrame ? Math.min((now-lastFrame)/1000, MAX_FRAME_DELTA) : 1/60;
+  lastFrame = now;
+  phase = (phase + delta * 0.55) % 1;
+
+  const target = scrollT();
+  const maxStep = delta * PROGRESS_PER_SECOND;
+  const difference = target - smoothT;
+  if(Math.abs(difference) <= maxStep){
+    smoothT = target;
+  }else{
+    smoothT += Math.sign(difference) * maxStep;
+  }
+
+  return {t:smoothT, phase};
+}
+
 function segment(t){
   for(const seg of TIMELINE){
     if(t>=seg.s && t<seg.e) return {seg, local:(t-seg.s)/(seg.e-seg.s)};
@@ -139,7 +157,7 @@ function drawBgClip(img, sx,sy,sw,sh, dx,dy,dw,dh){
 /* 小火车绘制（匀速缓慢行驶，居中纵向略靠下） */
 function drawTrain(x,y,dir,phase){
   ctx.save(); ctx.translate(x,y);
-  const sc=D*0.9; ctx.scale(sc,sc);
+  const sc=Math.max(.74, D*1.15); ctx.scale(sc,sc);
   if(dir<0) ctx.scale(-1,1);
   // 烟
   for(let i=0;i<4;i++){
@@ -551,9 +569,8 @@ function drawScene(idx,t,alpha,px){
   }
 }
 
-let lastT=-1, curIdx=-1;
-function render(){
-  const t=scrollT();
+let curIdx=-1;
+function render(t, phase){
   const {seg,local}=segment(t);
   ctx.clearRect(0,0,W,H);
   prog.style.width=(t*100)+'%';
@@ -598,15 +615,15 @@ function render(){
     const trainProg = seg.idx>=0 ? (seg.s + local*(seg.e-seg.s)) : t;
     const tx = lerp(W*.10, W*.92, clamp((t-.06)/.92,0,1));
     const ty = H*.86;
-    drawTrain(tx,ty,1,lastT);
+    drawTrain(tx,ty,1,phase);
   }
 
   hud.classList.toggle('show', seg.type!=='intro');
   hint.style.display = t<0.02?'block':'none';
 }
-(function loop(){
-  lastT+=0.016;
-  render();
+(function loop(now){
+  const frame = updateFrameState(now);
+  render(frame.t, frame.phase);
   requestAnimationFrame(loop);
-})();
+})(performance.now());
 })();

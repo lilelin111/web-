@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#171a17">
   <title>蜀行 | 四川影像地图</title>
-  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=20261013-3">
 </head>
 <body>
   <header class="topbar">
@@ -22,7 +22,7 @@
   <main>
     <section id="intro" class="intro" aria-label="开场视频">
       <div id="video-stage" class="video-stage">
-        <video id="intro-video" class="intro-video" muted playsinline preload="auto" poster="/assets/images/train-1.jpg">
+        <video id="intro-video" class="intro-video" autoplay muted playsinline preload="auto" poster="/assets/images/train-1.jpg">
           <source src="/assets/video/intro.mp4" type="video/mp4">
         </video>
         <div id="video-fallback" class="video-fallback" hidden>
@@ -50,8 +50,9 @@
 
     <section id="map" class="map-section">
       <div class="section-heading">
-        <p class="eyebrow">四川地图</p>
-        <h2>点选一座城</h2>
+        <p class="eyebrow">蜀中舆图 · 四时成诗</p>
+        <h2>一纸蜀山，四时入画</h2>
+        <span class="map-seal" aria-hidden="true">蜀</span>
       </div>
 
       <div class="map-layout">
@@ -65,13 +66,32 @@
         </div>
 
         <aside class="map-aside">
-          <p class="map-aside-kicker">蜀地</p>
-          <p class="map-aside-copy">从盆地到高原，城市沿着江河与山脉展开。点选地名，进入它的故事。</p>
+          <p class="map-aside-kicker">蜀地风物</p>
+          <p class="map-aside-copy">岷峨苍苍，锦水泱泱。春花、夏雨、秋月、冬雪，皆藏于这一卷蜀山。点选州府，循诗入蜀。</p>
           <div class="map-legend" aria-label="地图图例">
-            <span><i class="legend-dot legend-dot-city"></i>城市</span>
-            <span><i class="legend-line"></i>江河与山脉</span>
+            <span><i class="legend-dot legend-dot-city"></i>州府</span>
+            <span><i class="legend-line"></i>江河山脊</span>
           </div>
         </aside>
+      </div>
+
+      <div class="season-poems" aria-label="蜀地四季诗句">
+        <article>
+          <span class="season-name">春 · 锦江浮云</span>
+          <p>锦江春色来天地，玉垒浮云变古今。</p>
+        </article>
+        <article>
+          <span class="season-name">夏 · 蜀天夜雨</span>
+          <p>蜀天常夜雨，江槛已朝晴。</p>
+        </article>
+        <article>
+          <span class="season-name">秋 · 峨眉山月</span>
+          <p>峨眉山月半轮秋，影入平羌江水流。</p>
+        </article>
+        <article>
+          <span class="season-name">冬 · 西岭晴雪</span>
+          <p>窗含西岭千秋雪，门泊东吴万里船。</p>
+        </article>
       </div>
     </section>
 
@@ -85,6 +105,133 @@
         <button id="train-next" class="train-navbtn" type="button" aria-label="下一张图片">›</button>
         </div>
     </section>
+
+    <section id="four-seasons" class="four-seasons-section" aria-label="巴蜀四季">
+      <div class="four-seasons-embed">
+        <header class="fxc active down">
+          <nav class="navbar">
+            <div class="mask">巴蜀四季</div>
+            <div class="col fxb">
+              <ul class="navItem">
+                <li class="navList1">春</li>
+                <li class="navList2">夏</li>
+                <li class="navList3">秋</li>
+                <li class="navList4">冬</li>
+              </ul>
+            </div>
+          </nav>
+        </header>
+
+        <div class="four-seasons-main">
+          <section class="page1">
+            <div class="picture1">图片</div>
+            <div class="video1">视频</div>
+            <div class="title1">图片</div>
+          </section>
+
+          <section class="page2">
+            <div class="bs-map-section">四川地图</div>
+          </section>
+
+          <section class="page3">
+            <canvas id="canvas"></canvas>
+            <div class="hud" id="hud">出发：三星堆</div>
+            <div class="progress-bar" id="progressBar"></div>
+            <script>
+              const canvas = document.getElementById("canvas");
+              const ctx = canvas.getContext("2d");
+              const hud = document.getElementById("hud");
+              const progressBar = document.getElementById("progressBar");
+
+              function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+              }
+              resizeCanvas();
+              window.addEventListener("resize", resizeCanvas);
+
+              const rawStops = [
+                {
+                  id: "sanxingdui",
+                  name: "三星堆",
+                  X: 42.5,
+                  Y: 54.0,
+                  desc: "古蜀文明的神秘面纱",
+                  img: "/assets/ing/sanxingdui.jpg"
+                },
+                {
+                  id: "aiba",
+                  name: "阿坝",
+                  X: 50.0,
+                  Y: 40.0,
+                  desc: "雪山，草原与藏羌风情交织的高原秘境",
+                  img: "/assets/ing/九寨沟.jpg"
+                },
+                {
+                  id: "emeishan",
+                  name: "峨眉山",
+                  X: 47.0,
+                  Y: 64.0,
+                  desc: "金顶云海，佛光普照的天下名山。",
+                  img: "/assets/ing/峨眉山.jpg"
+                },
+                {
+                  id: "daochengyading",
+                  name: "稻城亚丁",
+                  X: 20.0,
+                  Y: 66.0,
+                  desc: "蓝色星球上最后一片净土，三神山守望的圣地。",
+                  img: "/assets/ing/青城山"
+                }
+              ];
+              const stops = rawStops.map((stop) => ({
+                ...stop,
+                x: stop.X / 100,
+                y: stop.Y / 100
+              }));
+
+              stops.forEach((stop) => {
+                const image = new Image();
+                image.crossOrigin = "anonymous";
+                image.src = stop.img;
+                stop.image = image;
+                stop.loaded = false;
+                image.onload = () => {
+                  stop.loaded = true;
+                };
+              });
+            </script>
+          </section>
+
+          <section class="page4">
+            <div class="origin-section">起源</div>
+          </section>
+        </div>
+
+        <footer class="footer">
+          <div class="footer-Logo">巴蜀四季</div>
+          <div class="footer-jiemian2">
+            <div class="footer-xiaoyu">
+              春花秋月何时了？往事知多少。<br>
+              小楼昨夜又东风，故国不堪回首月明中。<br>
+              雕栏玉砌应犹在，只是朱颜改。<br>
+              问君能有几多愁？恰似一江春水向东流。
+            </div>
+            <div class="footer-qr">
+              <img src="/assets/ing/微信图片.jpg" alt="二维码">
+            </div>
+          </div>
+          <div class="footer-jiemian3">
+            <p>© 2021-2026 Fujian Nanping Nanfu Battery Co., Ltd. All Rights Reserved</p>
+            <p>Web Designed by uunn.cn</p>
+          </div>
+          <div class="footer-box">
+            <div class="box last-conclusion">结语</div>
+            <aside class="qr-left-placeholder">二维码区域</aside>
+          </div>
+        </footer>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
@@ -92,8 +239,8 @@
     <span>四川影像地图</span>
   </footer>
 
-  <script src="/assets/data/sichuan-map.js"></script>
-  <script src="/assets/js/train-journey.js"></script>
-  <script src="/assets/js/app.js"></script>
+  <script src="/assets/data/sichuan-map.js?v=20261013-3"></script>
+  <script src="/assets/js/train-journey.js?v=20261013-4"></script>
+  <script src="/assets/js/app.js?v=20261013-3"></script>
 </body>
 </html>

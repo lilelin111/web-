@@ -67,6 +67,8 @@ const cityLayout = {
   Panzhihua: { x: 20, y: 84 }
 };
 
+const visibleCityNames = ["成都", "甘孜", "阿坝", "凉山", "绵阳", "德阳", "乐山", "宜宾", "南充"];
+
 const state = {
   introDone: false,
   fallbackTimer: 0,
@@ -196,12 +198,27 @@ function showVideoFallback() {
   state.fallbackTimer = window.setTimeout(finishIntro, 2800);
 }
 
+function playIntroVideo() {
+  if (state.introDone || !video.paused) {
+    return;
+  }
+
+  video.muted = true;
+  video.playsInline = true;
+  const playPromise = video.play();
+  if (playPromise) {
+    playPromise.catch(showVideoFallback);
+  }
+}
+
 function bindVideoEvents() {
   video.addEventListener("ended", finishIntro);
   video.addEventListener("error", showVideoFallback);
+  video.addEventListener("loadeddata", playIntroVideo, { once: true });
+  video.addEventListener("canplay", playIntroVideo, { once: true });
   fallbackPlay.addEventListener("click", finishIntro);
 
-  video.play().catch(showVideoFallback);
+  playIntroVideo();
   window.setTimeout(() => {
     if (!state.introDone && (video.readyState < 2 || video.paused)) {
       showVideoFallback();
@@ -264,7 +281,10 @@ function renderSichuanMap() {
 function renderMap(points) {
   mapPoints.replaceChildren();
   const normalized = normalizeMapPoints(points);
-  const allPoints = buildAllCityPoints(normalized);
+  const allCityPoints = buildAllCityPoints(normalized);
+  const allPoints = visibleCityNames
+    .map((name) => allCityPoints.find((point) => point.name === name))
+    .filter(Boolean);
   allPoints.forEach((point) => {
     const button = document.createElement("button");
     const dot = document.createElement("span");
